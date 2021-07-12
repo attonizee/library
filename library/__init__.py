@@ -5,9 +5,11 @@ from flask import Flask
 
 def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
+    base = os.path.join(app.instance_path, "library.db")
     app.config.from_mapping(
-        SECRET_KEY = 'lib',
-        DATABASE = os.path.join(app.instance_path, 'library_db')
+        SECRET_KEY = b'_5#y2L"F4Q8z\n\xec]/',
+        SQLALCHEMY_DATABASE_URI = f"sqlite:///../instance/library.db", 
+        SQLALCHEMY_TRACK_MODIFICATIONS = False      
     )
 
     if test_config is None:
@@ -23,5 +25,10 @@ def create_app(test_config=None):
     @app.route('/test')
     def test_page():
         return 'Your app is work'
+
+    from .database import db
+    db.init_app(app)
+    with app.app_context():
+        db.create_all()
 
     return app
