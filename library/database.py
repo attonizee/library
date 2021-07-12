@@ -1,4 +1,3 @@
-import library
 from flask_sqlalchemy import SQLAlchemy
 
 
