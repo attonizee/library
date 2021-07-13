@@ -1,7 +1,27 @@
+from datetime import datetime
+import click
+
+from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
+from werkzeug.security import check_password_hash, generate_password_hash
 
 
 db = SQLAlchemy()
+
+class Users(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_name = db.Column(db.String(36), index=True, unique=True)
+    user_password = db.Column(db.String(256))
+    reg_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
+
+    def generate_hash(self, password):
+        self.user_password = generate_password_hash(password)
+
+    def check_password(self, password):
+        return check_password_hash(self.user_password, password)
+
+    def __repr__(self):
+        return f'User {self.user_name} created {self.reg_date}'
 
 class Books(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -26,3 +46,11 @@ class Book_author(db.Model):
 
     def __repr__(self):
         return f'The book {self.book_id} wroted by {self.author_id}'
+
+@click.command('init-db')
+@with_appcontext
+def init_db_command():
+    """Clear the existing data and create new tables."""
+    db.create_all()
+    click.echo('Initialized the database.')
+
