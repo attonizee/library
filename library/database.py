@@ -10,8 +10,8 @@ db = SQLAlchemy()
 
 class Users(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_name = db.Column(db.String(36), index=True, unique=True)
-    user_password = db.Column(db.String(256))
+    user_name = db.Column(db.String(36), index=True, unique=True, nullable=False)
+    user_password = db.Column(db.String(256), nullable=False)
     reg_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
 
     def generate_hash(self, password):
@@ -22,30 +22,27 @@ class Users(db.Model):
 
     def __repr__(self):
         return f'User {self.user_name} created {self.reg_date}'
+book_author = db.Table('book_author', 
+    db.Column('books_id', db.Integer, db.ForeignKey('books.id'), primary_key=True),
+    db.Column('author_id', db.Integer, db.ForeignKey('author.id'), primary_key=True)
+)
 
 class Books(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    lib = db.relationship('Book_author', backref='Books', lazy='dynamic')
-
+    name = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    
     def __repr__(self):
         return f'The book {self.name} on ID {self.id}'
 
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(64), index=True, unique=True)
-    lib = db.relationship('Book_author', backref='Author', lazy='dynamic')
+    name = db.Column(db.String(64), index=True, unique=True, nullable=False)
+    book_author = db.relationship('Books', secondary=book_author, lazy='subquery',
+    backref=db.backref('Author', lazy=True))
 
     def __repr__(self):
         return f'Author name {self.name} has ID {self.id}'
 
-class Book_author(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    book_id = db.Column(db.Integer, db.ForeignKey('books.id'))
-    author_id = db.Column(db.Integer, db.ForeignKey('author.id'))
-
-    def __repr__(self):
-        return f'The book {self.book_id} wroted by {self.author_id}'
 
 @click.command('init-db')
 @with_appcontext

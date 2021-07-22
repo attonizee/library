@@ -1,9 +1,26 @@
+import os
+import tempfile
+
+import pytest
+
 from library import create_app
+from library.database import db
 
-def test_config():
-    assert not create_app().testing
-    assert create_app({'TESTING': True}).testing
+@pytest.fixture
+def client():
+    db_fd, db_path = tempfile.mkstemp()
+    app = create_app({'TESTING' : True, 'DATABASE' : db_path})
 
-def test_route(client):
-    response = client.get('/test')
-    assert response.data == b'Your app is work'
+    with app.test_client() as client:
+        with app.app_context():
+            db.create_all()
+        yield client
+
+    os.close(db_fd)
+    os.unlink(db_path)
+
+def test_empty_db(client):
+    '''Start with a blank database'''
+
+    rv = client.get('/test')
+    assert b'Your app is work' in rv.data

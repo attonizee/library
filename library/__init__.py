@@ -7,7 +7,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY = b'_5#y2L"F4Q8z\n\xec]/',
-        SQLALCHEMY_DATABASE_URI = f"sqlite:///../instance/library.db", 
+        SQLALCHEMY_DATABASE_URI = "sqlite:///../instance/library.db", 
         SQLALCHEMY_TRACK_MODIFICATIONS = False      
     )
 
@@ -29,5 +29,9 @@ def create_app(test_config=None):
     db.init_app(app)
     with app.app_context():
         app.cli.add_command(init_db_command)
+
+    from . import auth
+    app.register_blueprint(auth.bp)
+
 
     return app

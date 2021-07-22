@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en-US">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>{% block title %}{% endblock %}</title>
+    </head>
+    <body>
+        <nav>
+            <h1>Library</h1>
+            <ul>
+                <li><a href="{{ url_for('auth.register')}}">Registration</a></li>
+                <li><a href="{{ url_for('auth.login')}}">Log In</a></li>
+            </ul>
+        </nav>
+        
+        {% for message in get_flashed_messages() %}
+        <div class="flash">{{ message }}</div>
+        {% endfor %}
+
+        {% block content %}{% endblock %}
+
+
+    </body>
+</html>
