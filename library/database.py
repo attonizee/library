@@ -3,12 +3,13 @@ import click
 
 from flask.cli import with_appcontext
 from flask_sqlalchemy import SQLAlchemy
+from flask_login import UserMixin
 from werkzeug.security import check_password_hash, generate_password_hash
 
 
 db = SQLAlchemy()
 
-class Users(db.Model):
+class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(36), index=True, unique=True, nullable=False)
     user_password = db.Column(db.String(256), nullable=False)
@@ -21,7 +22,7 @@ class Users(db.Model):
         return check_password_hash(self.user_password, password)
 
     def __repr__(self):
-        return f'User {self.user_name} created {self.reg_date}'
+        return f'User {self.user_name}.'
 book_author = db.Table('book_author', 
     db.Column('books_id', db.Integer, db.ForeignKey('books.id'), primary_key=True),
     db.Column('author_id', db.Integer, db.ForeignKey('author.id'), primary_key=True)
