@@ -1,5 +1,5 @@
 from flask import Blueprint, render_template, request, url_for, flash, redirect
-from flask_login import login_user, login_required, current_user
+from flask_login import login_user, login_required, current_user, logout_user
 
 from library.database import Users, db
 from library.forms import Registration_Form, Login_Form
@@ -34,11 +34,12 @@ def login():
     errors = None
     if request.method == 'POST' and form.validate_on_submit():
         check_user = Users.query.filter_by(user_name=form.user_name.data).first()
+        remember = form.remember.data
         if not check_user or not check_user.check_password(form.user_password.data):
             errors = 'Wrong credentials'
         else:
-            login_user(check_user, remember=True)
-            return redirect(url_for('auth.profile'))
+            login_user(check_user, remember=remember)
+            return redirect(url_for('index'))
 
         flash(errors)
 
@@ -48,3 +49,9 @@ def login():
 @login_required
 def profile():
     return render_template('auth/profile.html', name=current_user)
+
+@bp.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('auth.login'))

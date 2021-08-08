@@ -1,0 +1,16 @@
+.navigation {
+    background-color: dodgerblue;
+}
+.navigation ul {
+    text-align: center;
+}
+
+.navigation li {
+    width: 100px;
+    display: inline-block;
+}
+
+.user_bar {
+    text-align: right;
+    margin-top: 0px;
+}

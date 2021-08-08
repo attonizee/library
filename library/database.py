@@ -22,7 +22,8 @@ class Users(db.Model, UserMixin):
         return check_password_hash(self.user_password, password)
 
     def __repr__(self):
-        return f'User {self.user_name}.'
+        return self.user_name
+
 book_author = db.Table('book_author', 
     db.Column('books_id', db.Integer, db.ForeignKey('books.id'), primary_key=True),
     db.Column('author_id', db.Integer, db.ForeignKey('author.id'), primary_key=True)
@@ -49,6 +50,7 @@ class Author(db.Model):
 @with_appcontext
 def init_db_command():
     """Clear the existing data and create new tables."""
+    db.drop_all()
     db.create_all()
     click.echo('Initialized the database.')
 

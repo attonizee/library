@@ -42,4 +42,8 @@ def create_app(test_config=None):
     def load_user(user_id):
         return Users.query.get(user_id)
 
+    from . import lib
+    app.register_blueprint(lib.bp)
+    app.add_url_rule('/', endpoint='index')
+
     return app
