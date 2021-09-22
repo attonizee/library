@@ -1,0 +1,18 @@
+{% extends "basic.html" %}
+
+{% block title %}Books{% endblock %}
+
+{% block content %}
+
+{% for book in books %}
+<table>
+    <tr>
+        <td>{{book.name}}</td>
+        
+    </tr>
+
+</table>    
+
+{% endfor %}
+
+{% endblock %}

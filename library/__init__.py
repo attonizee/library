@@ -8,7 +8,7 @@ def create_app(test_config=None):
     app = Flask(__name__, instance_relative_config=True)
     app.config.from_mapping(
         SECRET_KEY = b'_5#y2L"F4Q8z\n\xec]/',
-        SQLALCHEMY_DATABASE_URI = "sqlite:///../instance/library.db", 
+        SQLALCHEMY_DATABASE_URI = "postgresql://library:Xcya6b4u@localhost:5432/library_db", 
         SQLALCHEMY_TRACK_MODIFICATIONS = False      
     )
 

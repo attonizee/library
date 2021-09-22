@@ -17,3 +17,8 @@ class Login_Form(FlaskForm):
     user_password = PasswordField('User password', validators=[DataRequired('Enter your password')])
     remember = BooleanField('Remember me', default=False)
     login = SubmitField('Login')
+
+class Add_Book(FlaskForm):
+    book_name = StringField('Book name', validators=[DataRequired('Must not be empty')])
+    author_name = StringField('Author name', validators=[DataRequired('Must not be empty')])
+    add_button = SubmitField('Add')

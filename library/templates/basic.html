@@ -11,9 +11,10 @@
             <h1>Library</h1>
             <ul>
                 <li><a href="{{ url_for('index')}}">Home</a></li>
+                <li><a href="{{ url_for('lib.add_book')}}">Manage</a></li>
                 <li><a href="{{ url_for('auth.register')}}">Registration</a></li>
                 <li><a href="{{ url_for('auth.login')}}">Log In</a></li>
-                     
+                                
             </ul>
             {% if current_user.is_authenticated %}
             <section class="user_bar">
@@ -24,6 +25,9 @@
         </nav>
         
         {% block content %}{% endblock %}
+        <footer>
+            <p>Made by Attonizee &copy; anatoliiv1990@gmail.com</p>
+        </footer>
 
 
     </body>

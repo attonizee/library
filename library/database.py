@@ -9,11 +9,16 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 db = SQLAlchemy()
 
+class Groups(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    group = db.Column(db.String(36), nullable=False, unique=True)
+
 class Users(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     user_name = db.Column(db.String(36), index=True, unique=True, nullable=False)
     user_password = db.Column(db.String(256), nullable=False)
     reg_date = db.Column(db.DateTime(), index=True, default=datetime.utcnow)
+    group_id = db.Column('group_id', db.Integer, db.ForeignKey('groups.id'))
 
     def generate_hash(self, password):
         self.user_password = generate_password_hash(password)
@@ -39,11 +44,23 @@ class Books(db.Model):
 class Author(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(64), index=True, unique=True, nullable=False)
-    book_author = db.relationship('Books', secondary=book_author, lazy='subquery',
-    backref=db.backref('Author', lazy=True))
+    books_author = db.relationship('Books', secondary=book_author, lazy='subquery',
+        backref=db.backref('Author', lazy=True))
 
     def __repr__(self):
         return f'Author name {self.name} has ID {self.id}'
+
+class Copy(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    inventory_number = db.Column(db.Integer, unique=True, nullable=False)
+    in_stock = db.Column(db.Boolean, default=True)
+    book_id = db.Column('book_id', db.Integer, db.ForeignKey('books.id'))
+
+class Passing_book(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    delivery_date = db.Column(db.DateTime(), default=datetime.utcnow)
+    user_id = db.Column('user_id', db.Integer, db.ForeignKey('users.id'))
+    copy_id = db.Column('copy_id', db.Integer, db.ForeignKey('copy.id'))
 
 
 @click.command('init-db')
